@@ -1,0 +1,28 @@
+<html>
+<head>
+  <title>Leiomyosarcoma: The Game</title>
+  <link rel="stylesheet" href="/style/blueprint/screen.css" type="text/css" media="screen, projection">
+  <link rel="stylesheet" href="/style/blueprint/print.css" type="text/css" media="print"><!--[if lt IE 8]><link rel="stylesheet" href="/style/blueprint/ie.css" type="text/css" media="screen, projection"><![endif]-->
+  <script src="js/jquery-1.11.0.min.js"></script>
+
+  <script src="js/cancergame.js"></script>
+  <script>
+  function ready(){
+    Game.setClockElement($("#clock"));
+    Game.startClock();
+  };
+  document.addEventListener("DOMContentLoaded", ready, false);
+
+  </script>
+</head>
+<body>
+  <div class="container">
+
+<!--     <div class="span-12"> -->
+      <h1>Leiomyosarcoma: The Game</h1>
+      <img class="span-6" src="http://upload.wikimedia.org/wikipedia/commons/9/95/Leiomyosarcoma_of_the_Adrenal_vein_1.jpg" />
+      <h3 id="clock"></h3>
+<!--     </div> -->
+  </div>
+</body>
+</html>
