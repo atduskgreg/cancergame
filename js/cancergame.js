@@ -1,23 +1,53 @@
-Treatment = function(name, game, onCompletion){
+Treatment = function(name, game, callback){
   this.name = "Doctor's Appointment";
   this.length = 30;
   this.startDay;
   this.game = game;
-  this.onCompletion = onCompletion; // callback
+  this.callback = callback; // callback
   this.started = false;
+  this.element;
+  this.benefit = 0;
+  this.failed = false;
 }
 
 Treatment.prototype = {
+  calculateBenefit : function(baseAmt, chanceOfFailure, range){
+    if(Math.random() > chanceOfFailure){
+      this.benefit = baseAmt + Math.round(range*Math.random() - range/2);
+    } else {
+      this.benefit = 0;
+      this.failed = true;
+    }
+  },
+
   start : function(){
     this.startDay = this.game.getDaysRemaining();
   },
 
   isStarted : function(){
-      return this.startDay != undefined;
+    return this.startDay != undefined;
   },
 
   getRemainingDays : function(){
     return this.length - (this.startDay - this.game.getDaysRemaining());
+  },
+
+  setDisplay : function(element){
+    this.element = element;
+  },
+
+  draw : function(){
+    this.element.html("<h4>"+ this.name +"</h4><p>"+this.getRemainingDays()+" days remaining</p>");
+  },
+
+  onUpdate : function(){
+    this.draw();
+  },
+
+  onCompletion : function(){
+    this.element.empty();
+    this.game.addTime(this.benefit);
+    this.callback();
   }
 }
 
@@ -34,6 +64,9 @@ var Game = (function(){
   }
 
   return {
+    addTime : function(days){
+        daysLeft = daysLeft + days;
+    },
 
     setActiveTreatment : function(treatment){
         activeTreatment = treatment;
@@ -47,10 +80,13 @@ var Game = (function(){
       setInterval(function(){
         daysLeft = daysLeft - 1;
         showClock(clock);
+        if(activeTreatment &&  activeTreatment.isStarted()){
+          activeTreatment.onUpdate();
 
-        if(activeTreatment && activeTreatment.isStarted() && activeTreatment.getRemainingDays() <= 0){
-          activeTreatment.onCompletion();
-          activeTreatment = null;
+          if(activeTreatment.getRemainingDays() <= 0){
+            activeTreatment.onCompletion();
+            activeTreatment = null;
+          }
         }
       }, 1000 * secondsPerDay);
     },
