@@ -1,5 +1,5 @@
 ## TODO
 
 * Alert area to highlight added time
-* Show treatment options with clicking to create/start treatment
-* Model tech tree of treatment dependencies
+* Getting the xray should make the xray show up for the first time
+* Finishing a treatment should unlock dependent treatments

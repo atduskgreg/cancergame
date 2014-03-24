@@ -9,7 +9,6 @@
   <script src="js/dependencies.js"></script>
 
   <script>
-  T = {}
   function addTreatment(t){
     // t = new Treatment("Visit to primary care doctor", Game, function(){
     //   console.log("done with doctor's visit")
@@ -28,13 +27,10 @@
 
     Game.setClockElement($("#clock"));
     Game.setMessageElement($("#message"));
+    Game.setTreatmentElement($("#treatments"));
     Game.startClock();
 
-
-
-
     for(t in treatmentGraph){
-
 
       treatment = new Treatment(Game, treatments[t], function(){
         console.log(treatments[t].name + " done.");
@@ -43,21 +39,21 @@
       treatment.calculateBenefit(treatments[t].length, treatments[t].chanceOfFailure, range);
 
       for(var i = 0; i < treatmentGraph[t].length; i++){
-        treatment.dependencies.push(T[treatmentGraph[t][i]]);
+        treatment.dependencies.push(Game.treatments[treatmentGraph[t][i]]);
       }
 
-      T[t] = treatment;
-      if(treatment.isAvailable()){
-        $("#treatments").append("<li><a id='"+t+"' href='#'>"+ treatments[t].name +"</a></li>");
-      // } else {
-      // $("#treatments").append("<li><a id='"+t+"' href='#'>"+ treatments[t].name +"</a></li>")
-      //
-      }
+      Game.treatments[t] = treatment;
+      // if(treatment.isAvailable()){
+        $("#treatments").append("<li style='display:none'><a id='"+t+"' href='#'>"+ treatments[t].name +"</a></li>");
+      // }
     }
+
     $("#treatments a").click(function(e){
-      addTreatment(T[$(this).attr("id")]);
+      addTreatment(Game.treatments[$(this).attr("id")]);
       e.preventDefault();
     });
+    Game.showAvailableTreatments();
+
   };
   document.addEventListener("DOMContentLoaded", ready, false);
 

@@ -86,8 +86,9 @@ Treatment.prototype = {
     this.game.addTime(this.benefit);
     this.game.showMessage(this.name, this.message);
     if(this.prognosis != undefined){
-      game.setDaysRemaining(this.prognosis);
+      this.game.setDaysRemaining(this.prognosis);
     }
+    this.game.showAvailableTreatments();
     this.callback();
   }
 }
@@ -98,6 +99,8 @@ var Game = (function(){
   var clock;
   var activeTreatment;
   var messageDisplay;
+  var treatments = {};
+  var treatmentList;
 
   function showClock(element){
     var years = Math.floor(daysLeft/365);
@@ -105,7 +108,10 @@ var Game = (function(){
     element.html(years + " years and " + days + " days left to live.");
   }
 
+  //public API
   return {
+    treatments : treatments,
+
     showMessage : function(title,msg){
       messageDisplay.html("<h4>"+title+"</h4><p>"+msg+"</p><a id='msgOk' href='#'>OK</a>");
       $("#msgOk").click(function(e){
@@ -113,6 +119,15 @@ var Game = (function(){
         e.preventDefault();
       });
       messageDisplay.show();
+    },
+
+    showAvailableTreatments : function(){
+      // treatmentList.empty();
+      for(t in this.treatments){
+        if(this.treatments[t].isAvailable()){
+          $("#"+t).parent().show();
+        }
+      }
     },
 
     setDaysRemaining : function(days){
@@ -124,10 +139,14 @@ var Game = (function(){
     },
 
     setActiveTreatment : function(treatment){
-        activeTreatment = treatment;
+      activeTreatment = treatment;
     },
     setMessageElement : function(element){
       messageDisplay = element;
+    },
+
+    setTreatmentElement : function(element){
+      treatmentList = element;
     },
 
     getDaysRemaining : function(){
