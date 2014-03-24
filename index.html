@@ -27,6 +27,7 @@
     s.setDisplay($("#currentSymptom"));
 
     Game.setClockElement($("#clock"));
+    Game.setMessageElement($("#message"));
     Game.startClock();
 
 
@@ -67,9 +68,11 @@
     margin: 0;
     color: #f00;
   }
+
   </style>
 </head>
 <body>
+
   <div class="container">
 
     <div class="span-24">
@@ -80,11 +83,14 @@
       <h3 id="clock"></h3>
       <div id="currentTreatment">
       </div>
+      <div id="message">
+      </div>
       <div id="symptoms">
       <h4>Current Symptoms:</h4>
       <span id="currentSymptom">
       </span>
       </div>
+
     </div>
     <div class="span-5">
       <h4>Treatments</h4>

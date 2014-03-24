@@ -15,6 +15,7 @@ Symptom.prototype = {
 }
 
 Treatment = function(game, args, callback){
+  this.message = args.message;
   this.name = args.name;
   this.length = args.length;
   this.startDay;
@@ -78,10 +79,12 @@ Treatment.prototype = {
     this.draw();
   },
 
+
   onCompletion : function(){
     this.element.empty();
     this.complete = true;
     this.game.addTime(this.benefit);
+    this.game.showMessage(this.name, this.message);
     if(this.prognosis != undefined){
       game.setDaysRemaining(this.prognosis);
     }
@@ -94,6 +97,7 @@ var Game = (function(){
   var secondsPerDay = 1;
   var clock;
   var activeTreatment;
+  var messageDisplay;
 
   function showClock(element){
     var years = Math.floor(daysLeft/365);
@@ -102,16 +106,28 @@ var Game = (function(){
   }
 
   return {
+    showMessage : function(title,msg){
+      messageDisplay.html("<h4>"+title+"</h4><p>"+msg+"</p><a id='msgOk' href='#'>OK</a>");
+      $("#msgOk").click(function(e){
+        $("#message").hide();
+        e.preventDefault();
+      });
+      messageDisplay.show();
+    },
+
     setDaysRemaining : function(days){
       daysLeft = days;
     },
 
     addTime : function(days){
-        daysLeft = daysLeft + days;
+      daysLeft = daysLeft + days;
     },
 
     setActiveTreatment : function(treatment){
         activeTreatment = treatment;
+    },
+    setMessageElement : function(element){
+      messageDisplay = element;
     },
 
     getDaysRemaining : function(){

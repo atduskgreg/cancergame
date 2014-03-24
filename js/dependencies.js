@@ -5,7 +5,7 @@ treatments = {
     benefit: 0,
     symptoms : [],
     chanceOfFailure: 0,
-    message: "Doctor feels a mass at the source of your pain, but results are inclusive. More tests are needed. Make appointments for blood tests and an x-ray."
+    message: "Doctor is concerned about your symptoms, but results are inclusive. More tests are needed. Make appointments for blood tests and an x-ray."
   },
   "bloodTest1" : {
     name : "Basic blood tests",
