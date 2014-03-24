@@ -6,29 +6,68 @@
   <script src="js/jquery-1.11.0.min.js"></script>
 
   <script src="js/cancergame.js"></script>
+  <script src="js/dependencies.js"></script>
+
   <script>
-  function addTreatment(){
-    t = new Treatment("Visit to primary care doctor", Game, function(){
-      console.log("done with doctor's visit")
-    });
+  T = {}
+  function addTreatment(t){
+    // t = new Treatment("Visit to primary care doctor", Game, function(){
+    //   console.log("done with doctor's visit")
+    // });
+
     t.setDisplay($("#currentTreatment"));
     t.calculateBenefit(10, 0.1, 5);
     Game.setActiveTreatment(t);
+
     t.start();
   }
 
   function ready(){
+    s = new Symptom("persistent back ache");
+    s.setDisplay($("#currentSymptom"));
+
     Game.setClockElement($("#clock"));
     Game.startClock();
 
-    $("#doctorVisit").click(function(e){
-      addTreatment();
+
+
+
+    for(t in treatmentGraph){
+
+
+      treatment = new Treatment(Game, treatments[t], function(){
+        console.log(treatments[t].name + " done.");
+      });
+      range = 5;
+      treatment.calculateBenefit(treatments[t].length, treatments[t].chanceOfFailure, range);
+
+      for(var i = 0; i < treatmentGraph[t].length; i++){
+        treatment.dependencies.push(T[treatmentGraph[t][i]]);
+      }
+
+      T[t] = treatment;
+      if(treatment.isAvailable()){
+        $("#treatments").append("<li><a id='"+t+"' href='#'>"+ treatments[t].name +"</a></li>");
+      // } else {
+      // $("#treatments").append("<li><a id='"+t+"' href='#'>"+ treatments[t].name +"</a></li>")
+      //
+      }
+    }
+    $("#treatments a").click(function(e){
+      addTreatment(T[$(this).attr("id")]);
       e.preventDefault();
     });
   };
   document.addEventListener("DOMContentLoaded", ready, false);
 
   </script>
+  <style>
+  #symptoms h4 {
+    line-height: 1;
+    margin: 0;
+    color: #f00;
+  }
+  </style>
 </head>
 <body>
   <div class="container">
@@ -41,11 +80,16 @@
       <h3 id="clock"></h3>
       <div id="currentTreatment">
       </div>
+      <div id="symptoms">
+      <h4>Current Symptoms:</h4>
+      <span id="currentSymptom">
+      </span>
+      </div>
     </div>
     <div class="span-5">
       <h4>Treatments</h4>
-      <ul>
-        <li><a id="doctorVisit" href="#">Visit the doctor</a></li>
+      <ul id="treatments">
+<!--         <li><a id="doctorVisit" href="#">Visit the doctor</a></li> -->
 
         </ul>
     </div>

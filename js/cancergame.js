@@ -1,16 +1,50 @@
-Treatment = function(name, game, callback){
-  this.name = "Doctor's Appointment";
-  this.length = 30;
+Symptom = function(description){
+  this.description = description;
+}
+
+Symptom.prototype = {
+  setDisplay : function(element){
+    this.element = element;
+    this.draw();
+  },
+
+  draw : function(){
+    this.element.html("<p>"+ this.description +"</p>");
+  }
+
+}
+
+Treatment = function(game, args, callback){
+  this.name = args.name;
+  this.length = args.length;
   this.startDay;
   this.game = game;
   this.callback = callback; // callback
   this.started = false;
   this.element;
-  this.benefit = 0;
+  this.benefit = args.benefit;
   this.failed = false;
+  this.symptoms = args.symptoms;
+  this.prognosis = args.prognosis;
+  this.dependencies = [];
+  this.complete = false;
+
 }
 
 Treatment.prototype = {
+  isAvailable : function(){
+    result = true;
+    for(d in this.dependencies){
+        if(this.dependencies[d].complete){
+          result = this.dependencies[d].isAvailable();
+        } else {
+          result = false;
+        }
+    }
+
+    return result;
+  },
+
   calculateBenefit : function(baseAmt, chanceOfFailure, range){
     if(Math.random() > chanceOfFailure){
       this.benefit = baseAmt + Math.round(range*Math.random() - range/2);
@@ -46,13 +80,17 @@ Treatment.prototype = {
 
   onCompletion : function(){
     this.element.empty();
+    this.complete = true;
     this.game.addTime(this.benefit);
+    if(this.prognosis != undefined){
+      game.setDaysRemaining(this.prognosis);
+    }
     this.callback();
   }
 }
 
 var Game = (function(){
-  var daysLeft = 365 * 3;
+  var daysLeft = 365 * 60;
   var secondsPerDay = 1;
   var clock;
   var activeTreatment;
@@ -64,6 +102,10 @@ var Game = (function(){
   }
 
   return {
+    setDaysRemaining : function(days){
+      daysLeft = days;
+    },
+
     addTime : function(days){
         daysLeft = daysLeft + days;
     },
